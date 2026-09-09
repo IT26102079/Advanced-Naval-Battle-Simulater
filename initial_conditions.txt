@@ -15,31 +15,31 @@ ESCORT SHIPS
 -----------------------------------------
 
 E1
-Type         : EE
-Position     : (83.25, 401.96)
-Impact Power : 0.04
-Angle Range  : 70.00 degrees
-Min Angle    : 3.44 degrees
-Max Angle    : 73.44 degrees
-Vmin         : 65.34
-Vmax         : 208.85
+Type         : EB
+Position     : (75.75, 189.86)
+Impact Power : 0.06
+Angle Range  : 30.00 degrees
+Min Angle    : 26.19 degrees
+Max Angle    : 56.19 degrees
+Vmin         : 30.15
+Vmax         : 258.06
 
 E2
-Type         : EC
-Position     : (983.48, 893.74)
-Impact Power : 0.07
-Angle Range  : 25.00 degrees
-Min Angle    : 62.80 degrees
-Max Angle    : 87.80 degrees
-Vmin         : 25.26
-Vmax         : 233.03
+Type         : ED
+Position     : (57.58, 631.26)
+Impact Power : 0.05
+Angle Range  : 50.00 degrees
+Min Angle    : 31.00 degrees
+Max Angle    : 81.00 degrees
+Vmin         : 27.06
+Vmax         : 219.28
 
 E3
 Type         : ED
-Position     : (753.34, 45.81)
+Position     : (665.41, 489.29)
 Impact Power : 0.05
 Angle Range  : 50.00 degrees
-Min Angle    : 39.59 degrees
-Max Angle    : 89.59 degrees
-Vmin         : 32.86
-Vmax         : 222.07
+Min Angle    : 17.73 degrees
+Max Angle    : 67.73 degrees
+Vmin         : 22.43
+Vmax         : 217.61

@@ -9,8 +9,8 @@ Position : (500.00, 500.00)
 
 ESCORT SHIPS
 -----------------------------------------
-E1 (EE) : ACTIVE
-E2 (EC) : ACTIVE
+E1 (EB) : ACTIVE
+E2 (ED) : ACTIVE
 E3 (ED) : ACTIVE
 
 Number of escort ships destroyed: 0

@@ -42,6 +42,23 @@ void setupEscortShips(struct Escort escorts[],
                       double D);
 
 void runPart1A();
+void runPart1B();
+
+int runPart1BIteration(struct Battleship b,
+                       struct Escort escorts[],
+                       int n,
+                       double bAngleMin,
+                       double bAngleMax);
+
+void savePart1BStep(int simulationNumber,
+                    int iterationNumber,
+                    struct Battleship b,
+                    struct Escort escorts[],
+                    int n,
+                    int destroyedBefore[],
+                    double bAngleMin,
+                    double bAngleMax,
+                    int battleshipSinks);
 
 double calculateDistance(double x1,
                          double y1,
@@ -57,9 +74,9 @@ int findShot(double distance,
              double *selectedAngle,
              double *timeToHit);
 
-void runSimulation(struct Battleship b,
-                   struct Escort escorts[],
-                   int n);
+int runSimulation(struct Battleship b,
+                  struct Escort escorts[],
+                  int n);
 void saveHitDetails(struct Battleship b,
                     struct Escort escorts[],
                     int n);
@@ -80,38 +97,37 @@ int main()
         printf("\n=========================================\n");
         printf("      ADVANCED NAVAL BATTLE SIMULATOR\n");
         printf("=========================================\n");
-        printf("1. Start Simulation\n");
-        printf("2. View Instructions\n");
-        printf("3. Simulation Statistics\n");
-        printf("4. Exit\n");
-
+        printf("1. Run Part 1-A\n");
+        printf("2. Run Part 1-B\n");
+        printf("3. View Instructions\n");
+        printf("4. Exit\n");       
         printf("\nEnter choice: ");
         scanf("%d", &choice);
 
-        if (choice == 1)
-        {
-            runPart1A();
-        }
-        else if (choice == 2)
-        {
-            printf("\nInstructions will be added later.\n");
-        }
-        else if (choice == 3)
-        {
-            printf("\nSimulation statistics will be added later.\n");
-        }
-        else if (choice == 4)
-        {
-            printf("\nExiting simulator...\n");
-            break;
-        }
-        else
-        {
-            printf("\nInvalid choice. Please try again.\n");
-        }
-    }
+       if (choice == 1)
+     {
+       runPart1A();
+     }
+       else if (choice == 2)
+     {
+       runPart1B();
+     }
+       else if (choice == 3)
+     {
+       printf("\nInstructions will be added later.\n");
+     }
+       else if (choice == 4)
+     {
+       printf("\nExiting simulator...\n");
+       break;
+     }
+       else
+     {
+       printf("\nInvalid choice. Please try again.\n");
+     }
+   }
 
-    return 0;
+     return 0;
 }
 
 void runPart1A()
@@ -239,7 +255,10 @@ void runPart1A()
 
     } while (battleship.vmax <= 0);
 
-    battleship.vmin = 0;
+    
+   battleship.vmin = 0;
+ 
+
     srand((unsigned int)time(NULL));
 
     setupEscortShips(escorts,numberOfEscorts,battleship.vmax,D);
@@ -254,9 +273,7 @@ void runPart1A()
     printf("\nBATTLESHIP B\n");
     printf("-----------------------------------------\n");
     printf("Type     : %c\n", battleship.type);
-    printf("Position : (%.2f, %.2f)\n",
-           battleship.x,
-           battleship.y);
+    printf("Position : (%.2f, %.2f)\n",battleship.x,battleship.y);
     printf("Vmin     : %.2f\n", battleship.vmin);
     printf("Vmax     : %.2f\n", battleship.vmax);
     printf("Angle    : 0.00 - 90.00 degrees\n");
@@ -291,13 +308,26 @@ for (int i = 0; i < numberOfEscorts; i++)
     printf("Vmax         : %.2f\n",
            escorts[i].vmax);
 }
-   saveInitialConditions(battleship,escorts,numberOfEscorts,D);
+   saveInitialConditions(battleship,
+                      escorts,
+                      numberOfEscorts,
+                      D);
 
-    saveHitDetails(battleship,escorts,numberOfEscorts);
-   
-    runSimulation(battleship,escorts,numberOfEscorts);
+int battleshipSinks =
+    runSimulation(battleship,
+                  escorts,
+                  numberOfEscorts);
 
-    saveFinalConditions(battleship,escorts,numberOfEscorts);
+if (battleshipSinks == 0)
+{
+    saveHitDetails(battleship,
+                   escorts,
+                   numberOfEscorts);
+}
+
+saveFinalConditions(battleship,
+                    escorts,
+                    numberOfEscorts);
 }
 
 double randomDouble(double min, double max)
@@ -467,11 +497,12 @@ int findShot(double distance,
     }
 
     return found;
+
 }
 
-void runSimulation(struct Battleship b,
-                   struct Escort escorts[],
-                   int n)
+int runSimulation(struct Battleship b,
+                  struct Escort escorts[],
+                  int n)
 {
     int battleshipSinks = 0;
     int sinkingEscortIndex = -1;
@@ -616,6 +647,7 @@ void runSimulation(struct Battleship b,
     printf("\n=========================================\n");
     printf("              BATTLE ENDED\n");
     printf("=========================================\n");
+    return battleshipSinks;
 }    
 
 void saveInitialConditions(struct Battleship b,
@@ -796,4 +828,595 @@ void saveFinalConditions(struct Battleship b,
     fclose(file);
 
     printf("Final conditions saved to final_conditions.txt\n");
+
+}
+
+void runPart1B()
+{
+    struct Battleship battleship;
+    struct Escort escorts[100];
+
+    int numberOfEscorts;
+    int k;
+    int t;
+
+    double D;
+    double thetaMin;
+
+    printf("\n=========================================\n");
+    printf("                PART 1-B\n");
+    printf("=========================================\n");
+
+    do
+    {
+      printf("Enter battlefield size D: ");
+      scanf("%lf", &D);
+
+    if (D <= 0)
+    {
+        printf("D must be greater than 0.\n");
+    }
+
+    } while (D <= 0);
+
+    do
+    {
+      printf("Enter number of escort ships (1-100): ");
+      scanf("%d", &numberOfEscorts);
+
+    if (numberOfEscorts < 1 ||numberOfEscorts > 100)
+    {
+        printf("Invalid number of escort ships.\n");
+    }
+
+    } while (numberOfEscorts < 1 ||numberOfEscorts > 100);
+    printf("\n=========================================\n");
+printf("          BATTLESHIP SETUP\n");
+printf("=========================================\n");
+
+printf("U - USS Iowa (BB-61)\n");
+printf("M - MS King George V\n");
+printf("R - Richelieu\n");
+printf("S - Sovetsky Soyuz-class\n");
+
+do
+{
+    printf("\nEnter battleship type: ");
+    scanf(" %c", &battleship.type);
+
+    if (battleship.type >= 'a' &&
+        battleship.type <= 'z')
+    {
+        battleship.type =
+            battleship.type - 32;
+    }
+
+    if (battleship.type != 'U' &&
+        battleship.type != 'M' &&
+        battleship.type != 'R' &&
+        battleship.type != 'S')
+    {
+        printf("Invalid battleship type.\n");
+    }
+
+} while (battleship.type != 'U' &&
+         battleship.type != 'M' &&
+         battleship.type != 'R' &&
+         battleship.type != 'S');
+
+
+do
+{
+    printf("Enter battleship maximum shell velocity: ");
+    scanf("%lf", &battleship.vmax);
+
+    if (battleship.vmax <= 0)
+    {
+        printf("Maximum velocity must be greater than 0.\n");
+    }
+
+} while (battleship.vmax <= 0);
+
+battleship.vmin = 0;
+
+
+do
+{
+    printf("Enter number of path points k (2-100): ");
+    scanf("%d", &k);
+
+    if (k < 2 || k > 100)
+    {
+        printf("Invalid value for k.\n");
+    }
+
+} while (k < 2 || k > 100);
+
+
+do
+{
+    printf("Enter jam iteration t (1 to %d): ", k - 1);
+    scanf("%d", &t);
+
+    if (t < 1 || t >= k)
+    {
+        printf("t must be less than k.\n");
+    }
+
+} while (t < 1 || t >= k);
+
+
+do
+{
+    printf("Enter jammed minimum angle thetaMin (0 < thetaMin < 30): ");
+    scanf("%lf", &thetaMin);
+
+    if (thetaMin <= 0 || thetaMin >= 30)
+    {
+        printf("thetaMin must be between 0 and 30.\n");
+    }
+
+} while (thetaMin <= 0 || thetaMin >= 30);
+
+
+struct Escort sim1Escorts[100];
+struct Escort sim2Escorts[100];
+
+double pathX[100];
+double pathY[100];
+
+
+setupEscortShips(escorts,
+                 numberOfEscorts,
+                 battleship.vmax,
+                 D);
+
+
+/* Same initial escort conditions for both simulations */
+for (int i = 0; i < numberOfEscorts; i++)
+{
+    sim1Escorts[i] = escorts[i];
+    sim2Escorts[i] = escorts[i];
+}
+
+
+/* Generate the same path for both simulations */
+for (int i = 0; i < k; i++)
+{
+    pathX[i] = randomDouble(0, D);
+    pathY[i] = randomDouble(0, D);
+}
+
+
+printf("\n=========================================\n");
+printf("          GENERATED BATTLESHIP PATH\n");
+printf("=========================================\n");
+
+for (int i = 0; i < k; i++)
+{
+    printf("Point %d : (%.2f, %.2f)\n",
+           i + 1,
+           pathX[i],
+           pathY[i]);
+}
+printf("\n=========================================\n");
+printf("       PART 1-B - SIMULATION 1\n");
+printf("=========================================\n");
+
+for (int i = 0; i < k; i++)
+{
+    int battleshipSinks;
+        int destroyedBefore[100];
+
+    for (int j = 0; j < numberOfEscorts; j++)
+    {
+        destroyedBefore[j] = sim1Escorts[j].destroyed;
+    }
+
+    battleship.x = pathX[i];
+    battleship.y = pathY[i];
+
+    printf("\n-----------------------------------------\n");
+    printf("Iteration %d\n", i + 1);
+
+    printf("Battleship Position : (%.2f, %.2f)\n",
+           battleship.x,
+           battleship.y);
+
+    battleshipSinks =
+        runPart1BIteration(battleship,
+                           sim1Escorts,
+                           numberOfEscorts,
+                           0.0,
+                           90.0);
+    savePart1BStep(1,
+               i + 1,
+               battleship,
+               sim1Escorts,
+               numberOfEscorts,
+               destroyedBefore,
+               0.0,
+               90.0,
+               battleshipSinks);
+
+    if (battleshipSinks == 1)
+    {
+        printf("\nSimulation 1 stopped because B sank.\n");
+        break;
+    }
+}
+
+
+printf("\n=========================================\n");
+printf("       PART 1-B - SIMULATION 2\n");
+printf("=========================================\n");
+
+printf("Same initial conditions and same path are used.\n");
+printf("Gun jams after %d iterations.\n", t);
+
+for (int i = 0; i < k; i++)
+{
+    int battleshipSinks;
+        int destroyedBefore[100];
+
+    for (int j = 0; j < numberOfEscorts; j++)
+    {
+        destroyedBefore[j] = sim2Escorts[j].destroyed;
+    }
+
+    battleship.x = pathX[i];
+    battleship.y = pathY[i];
+
+    printf("\n-----------------------------------------\n");
+    printf("Iteration %d\n", i + 1);
+
+    printf("Battleship Position : (%.2f, %.2f)\n",
+           battleship.x,
+           battleship.y);
+
+    if (i < t)
+    {
+        printf("Angle Range : 0.00 - 90.00 degrees\n");
+
+        battleshipSinks =
+            runPart1BIteration(battleship,
+                               sim2Escorts,
+                               numberOfEscorts,
+                               0.0,
+                               90.0);
+    }
+    else
+    {
+        printf("Gun JAMMED\n");
+
+        printf("Angle Range : %.2f - 90.00 degrees\n",
+               thetaMin);
+
+        battleshipSinks =
+            runPart1BIteration(battleship,
+                               sim2Escorts,
+                               numberOfEscorts,
+                               thetaMin,
+                               90.0);
+    }
+    if (i < t)
+{
+    savePart1BStep(2,
+                   i + 1,
+                   battleship,
+                   sim2Escorts,
+                   numberOfEscorts,
+                   destroyedBefore,
+                   0.0,
+                   90.0,
+                   battleshipSinks);
+}
+else
+{
+    savePart1BStep(2,
+                   i + 1,
+                   battleship,
+                   sim2Escorts,
+                   numberOfEscorts,
+                   destroyedBefore,
+                   thetaMin,
+                   90.0,
+                   battleshipSinks);
+}
+
+    if (battleshipSinks == 1)
+    {
+        printf("\nSimulation 2 stopped because B sank.\n");
+        break;
+    }
+}
+}
+
+    int runPart1BIteration(struct Battleship b,
+                       struct Escort escorts[],
+                       int n,
+                       double bAngleMin,
+                       double bAngleMax)
+{
+    int sinkingEscortIndex = -1;
+    int destroyedCount = 0;
+
+    double shortestEnemyHitTime = 1000000000.0;
+    double battleDuration = 0;
+
+    double distance;
+    double velocity;
+    double angle;
+    double hitTime;
+
+    /* Check whether an ACTIVE escort can hit B */
+    for (int i = 0; i < n; i++)
+    {
+        if (escorts[i].destroyed == 1)
+        {
+            continue;
+        }
+
+        distance =
+            calculateDistance(escorts[i].x,
+                              escorts[i].y,
+                              b.x,
+                              b.y);
+
+        if (findShot(distance,
+                     escorts[i].vmin,
+                     escorts[i].vmax,
+                     escorts[i].angleMin,
+                     escorts[i].angleMax,
+                     &velocity,
+                     &angle,
+                     &hitTime))
+        {
+            if (hitTime < shortestEnemyHitTime)
+            {
+                shortestEnemyHitTime = hitTime;
+                sinkingEscortIndex = i;
+            }
+        }
+    }
+
+    if (sinkingEscortIndex != -1)
+    {
+        printf("Battleship B is going to sink.\n");
+
+        printf("B is sunk by E%d.\n",
+               escorts[sinkingEscortIndex].id);
+
+        printf("Time to hit B: %.2f seconds\n",
+               shortestEnemyHitTime);
+
+        return 1;
+    }
+
+    /* B attacks only ACTIVE escorts */
+    for (int i = 0; i < n; i++)
+    {
+        if (escorts[i].destroyed == 1)
+        {
+            continue;
+        }
+
+        distance =
+            calculateDistance(b.x,
+                              b.y,
+                              escorts[i].x,
+                              escorts[i].y);
+
+        if (findShot(distance,
+                     b.vmin,
+                     b.vmax,
+                     bAngleMin,
+                     bAngleMax,
+                     &velocity,
+                     &angle,
+                     &hitTime))
+        {
+            escorts[i].destroyed = 1;
+            destroyedCount++;
+
+            printf("B destroyed E%d\n",
+                   escorts[i].id);
+
+            printf("Angle    : %.2f degrees\n",
+                   angle);
+
+            printf("Velocity : %.2f\n",
+                   velocity);
+
+            printf("Time     : %.2f seconds\n\n",
+                   hitTime);
+
+            if (hitTime > battleDuration)
+            {
+                battleDuration = hitTime;
+            }
+        }
+    }
+
+    printf("Battleship B survives this iteration.\n");
+
+    printf("Escort ships destroyed this iteration: %d\n",
+           destroyedCount);
+
+    printf("Battle duration: %.2f seconds\n",
+           battleDuration);
+
+    return 0;
+}
+void savePart1BStep(int simulationNumber,
+                    int iterationNumber,
+                    struct Battleship b,
+                    struct Escort escorts[],
+                    int n,
+                    int destroyedBefore[],
+                    double bAngleMin,
+                    double bAngleMax,
+                    int battleshipSinks)
+{
+    FILE *file;
+    char filename[100];
+
+    double distance;
+    double velocity;
+    double angle;
+    double hitTime;
+
+    double shortestHitTime = 1000000000.0;
+
+    int sinkingEscortIndex = -1;
+    int destroyedThisStep = 0;
+
+    snprintf(filename,
+             sizeof(filename),
+             "part1B_sim%d_step_%d.txt",
+             simulationNumber,
+             iterationNumber);
+
+    file = fopen(filename, "w");
+
+    if (file == NULL)
+    {
+        printf("Error creating %s\n", filename);
+        return;
+    }
+
+    fprintf(file, "=========================================\n");
+    fprintf(file, "       PART 1-B SIMULATION %d\n",
+            simulationNumber);
+    fprintf(file, "=========================================\n");
+
+    fprintf(file, "\nIteration : %d\n",
+            iterationNumber);
+
+    fprintf(file,
+            "Battleship Position : (%.2f, %.2f)\n",
+            b.x,
+            b.y);
+
+    fprintf(file,
+            "Battleship Angle Range : %.2f - %.2f degrees\n",
+            bAngleMin,
+            bAngleMax);
+
+
+    if (battleshipSinks == 1)
+    {
+        fprintf(file, "\nBattleship Status : SUNK\n");
+
+        for (int i = 0; i < n; i++)
+        {
+            if (destroyedBefore[i] == 1)
+            {
+                continue;
+            }
+
+            distance =
+                calculateDistance(escorts[i].x,
+                                  escorts[i].y,
+                                  b.x,
+                                  b.y);
+
+            if (findShot(distance,
+                         escorts[i].vmin,
+                         escorts[i].vmax,
+                         escorts[i].angleMin,
+                         escorts[i].angleMax,
+                         &velocity,
+                         &angle,
+                         &hitTime))
+            {
+                if (hitTime < shortestHitTime)
+                {
+                    shortestHitTime = hitTime;
+                    sinkingEscortIndex = i;
+                }
+            }
+        }
+
+        if (sinkingEscortIndex != -1)
+        {
+            fprintf(file,
+                    "B was sunk by E%d\n",
+                    escorts[sinkingEscortIndex].id);
+
+            fprintf(file,
+                    "Time to hit B : %.2f seconds\n",
+                    shortestHitTime);
+        }
+    }
+    else
+    {
+        fprintf(file, "\nBattleship Status : SURVIVED\n");
+
+        fprintf(file, "\nESCORT SHIPS HIT IN THIS ITERATION\n");
+        fprintf(file, "-----------------------------------------\n");
+
+        for (int i = 0; i < n; i++)
+        {
+            if (destroyedBefore[i] == 0 &&
+                escorts[i].destroyed == 1)
+            {
+                destroyedThisStep++;
+
+                distance =
+                    calculateDistance(b.x,
+                                      b.y,
+                                      escorts[i].x,
+                                      escorts[i].y);
+
+                fprintf(file,
+                        "\nE%d\n",
+                        escorts[i].id);
+
+                if (findShot(distance,
+                             b.vmin,
+                             b.vmax,
+                             bAngleMin,
+                             bAngleMax,
+                             &velocity,
+                             &angle,
+                             &hitTime))
+                {
+                    fprintf(file,
+                            "Angle    : %.2f degrees\n",
+                            angle);
+
+                    fprintf(file,
+                            "Velocity : %.2f\n",
+                            velocity);
+
+                    fprintf(file,
+                            "Time     : %.2f seconds\n",
+                            hitTime);
+                }
+            }
+        }
+
+        fprintf(file,
+                "\nEscort ships destroyed this iteration : %d\n",
+                destroyedThisStep);
+    }
+
+
+    fprintf(file, "\nFINAL ESCORT CONDITIONS\n");
+    fprintf(file, "-----------------------------------------\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        fprintf(file,
+                "E%d (E%c) : %s\n",
+                escorts[i].id,
+                escorts[i].type,
+                escorts[i].destroyed ?
+                    "DESTROYED" : "ACTIVE");
+    }
+
+    fclose(file);
+
+    printf("Saved results to %s\n", filename);
 }

@@ -1,0 +1,19 @@
+=========================================
+       PART 1-B SIMULATION 1
+=========================================
+
+Iteration : 1
+Battleship Position : (21.83, 51.29)
+Battleship Angle Range : 0.00 - 90.00 degrees
+
+Battleship Status : SUNK
+B was sunk by E4
+Time to hit B : 0.98 seconds
+
+FINAL ESCORT CONDITIONS
+-----------------------------------------
+E1 (ED) : ACTIVE
+E2 (EB) : ACTIVE
+E3 (EA) : ACTIVE
+E4 (EB) : ACTIVE
+E5 (EE) : ACTIVE
