@@ -1,0 +1,24 @@
+=========================================
+              HIT DETAILS
+=========================================
+
+Escort E1
+Distance : 428.13
+Status   : HIT POSSIBLE
+Velocity : 293.07
+Angle    : 1.40 degrees
+Time     : 1.46 seconds
+
+Escort E2
+Distance : 623.53
+Status   : HIT POSSIBLE
+Velocity : 295.97
+Angle    : 2.00 degrees
+Time     : 2.11 seconds
+
+Escort E3
+Distance : 520.06
+Status   : HIT POSSIBLE
+Velocity : 293.15
+Angle    : 1.70 degrees
+Time     : 1.77 seconds

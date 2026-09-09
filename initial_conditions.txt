@@ -1,0 +1,45 @@
+=========================================
+          INITIAL CONDITIONS
+=========================================
+
+Battlefield Size D: 1000.00
+
+BATTLESHIP B
+-----------------------------------------
+Type     : U
+Position : (500.00, 500.00)
+Vmin     : 0.00
+Vmax     : 300.00
+
+ESCORT SHIPS
+-----------------------------------------
+
+E1
+Type         : EE
+Position     : (83.25, 401.96)
+Impact Power : 0.04
+Angle Range  : 70.00 degrees
+Min Angle    : 3.44 degrees
+Max Angle    : 73.44 degrees
+Vmin         : 65.34
+Vmax         : 208.85
+
+E2
+Type         : EC
+Position     : (983.48, 893.74)
+Impact Power : 0.07
+Angle Range  : 25.00 degrees
+Min Angle    : 62.80 degrees
+Max Angle    : 87.80 degrees
+Vmin         : 25.26
+Vmax         : 233.03
+
+E3
+Type         : ED
+Position     : (753.34, 45.81)
+Impact Power : 0.05
+Angle Range  : 50.00 degrees
+Min Angle    : 39.59 degrees
+Max Angle    : 89.59 degrees
+Vmin         : 32.86
+Vmax         : 222.07

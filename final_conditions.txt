@@ -1,0 +1,17 @@
+=========================================
+          FINAL CONDITIONS
+=========================================
+
+BATTLESHIP B
+-----------------------------------------
+Type     : U
+Position : (500.00, 500.00)
+
+ESCORT SHIPS
+-----------------------------------------
+E1 (EE) : ACTIVE
+E2 (EC) : ACTIVE
+E3 (ED) : ACTIVE
+
+Number of escort ships destroyed: 0
+Number of escort ships remaining: 3
